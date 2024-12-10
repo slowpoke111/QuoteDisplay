@@ -50,6 +50,13 @@
       opacity: 0;
       animation: typewriter 0.05s steps(1) forwards;
     }
+    /* Add the space styling so it stays visible */
+    .quote .space {
+      display: inline-block;
+      width: 1em;
+      opacity: 1;
+      animation: none; /* No typing effect on spaces */
+    }
     @keyframes typewriter {
       0% {
         opacity: 0;
@@ -83,7 +90,16 @@
       quotes.forEach((quote, index) => {
         const quoteDiv = document.createElement('div');
         quoteDiv.className = 'quote';
-        quoteDiv.innerHTML = quote.split('').map(char => `<span>${char}</span>`).join('');
+
+        // Split the quote into characters and spaces
+        quoteDiv.innerHTML = quote.split('').map(char => {
+          if (char === ' ') {
+            return '<span class="space"> </span>'; // Preserve spaces
+          } else {
+            return `<span>${char}</span>`;
+          }
+        }).join('');
+
         quotesContainer.appendChild(quoteDiv);
       });
     }
