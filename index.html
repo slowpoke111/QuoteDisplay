@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Quotes Display</title>
+  <style>
+    /* Hacker theme styling */
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #quote-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #00ff00;
+      border-radius: 8px;
+      background-color: black;
+      box-shadow: 0 0 10px #00ff00;
+      text-align: center;
+      margin-top: 100px;
+    }
+    .quote {
+      font-size: 20px;
+      line-height: 1.5;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slide-down 1s ease-out forwards;
+    }
+    /* Slide down animation */
+    @keyframes slide-down {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Typing effect for letters */
+    .quote span {
+      display: inline-block;
+      opacity: 0;
+      animation: typewriter 0.05s steps(1) forwards;
+    }
+    @keyframes typewriter {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="quote-container">
+    <h2>Random Quotes</h2>
+    <div id="quotes-list"></div>
+  </div>
+
+  <script>
+    // Load quotes from the txt file
+    async function fetchQuotes() {
+      const response = await fetch('quotes.txt');  // Path to your quotes.txt file
+      const text = await response.text();
+      return text.split('\n').map(line => line.trim()).filter(line => line !== '');
+    }
+
+    // Display quotes with typewriter effect
+    function displayQuotes(quotes) {
+      const quotesContainer = document.getElementById('quotes-list');
+      quotesContainer.innerHTML = '';  // Clear the container
+
+      quotes.forEach((quote, index) => {
+        const quoteDiv = document.createElement('div');
+        quoteDiv.className = 'quote';
+        quoteDiv.innerHTML = quote.split('').map(char => `<span>${char}</span>`).join('');
+        quotesContainer.appendChild(quoteDiv);
+      });
+    }
+
+    // Rotate quotes every 60 seconds (60000 milliseconds)
+    async function updateQuotes() {
+      const quotes = await fetchQuotes();
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      const newQuotes = [quotes[randomIndex], ...quotes.slice(0, 9)];
+      displayQuotes(newQuotes);
+    }
+
+    // Initial quote display and rotation setup
+    window.onload = function() {
+      setInterval(updateQuotes, 60000);  // Update every 60 seconds
+      updateQuotes();  // Initial quote display
+    }
+  </script>
+
+</body>
+</html>
